@@ -89,11 +89,6 @@
 alignas(16) const uint32_t saes_table[4][256] = { saes_data(saes_u0), saes_data(saes_u1), saes_data(saes_u2), saes_data(saes_u3) };
 alignas(16) const uint8_t  saes_sbox[256] = saes_data(saes_h0);
 
-// typedef union {
-//     __m128i m128i;
-//     uint32_t u32[4];
-// } m128Converter;
-
 static inline __m128i soft_aesenc(const uint32_t* in, __m128i key)
 {
     #ifdef XMRIG_ARM
@@ -110,14 +105,6 @@ static inline __m128i soft_aesenc(const uint32_t* in, __m128i key)
     const uint32_t x2 = in[2];
     const uint32_t x3 = in[3];
     #endif
-
-    // working on arm, untested on x86
-    // m128Converter converter;
-    // converter.m128i = *(__m128i*)in;
-    // const uint32_t x0 = converter.u32[0];
-    // const uint32_t x1 = converter.u32[1];
-    // const uint32_t x2 = converter.u32[2];
-    // const uint32_t x3 = converter.u32[3];
 
     __m128i out = _mm_set_epi32(
         (saes_table[0][x3 & 0xff] ^ saes_table[1][(x0 >> 8) & 0xff] ^ saes_table[2][(x1 >> 16) & 0xff] ^ saes_table[3][x2 >> 24]),
